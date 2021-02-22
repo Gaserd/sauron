@@ -6,19 +6,25 @@ function createTableSignals(data) {
 
     data = data.reverse()
 
-    let upBlock = '<h1>Monitoring PancakeSwap transactions</h1>'
+    let upBlock = '<html><body><h1>Monitoring PancakeSwap transactions</h1>'
     upBlock += '<p>we monitoring big transactions on PancakeSwap (more 25 BNB) and view last 50 this transactions</p>'
     upBlock += '<p>pls refresh page if you want get new transactions</p>'
 
-    let table = '<table>'
+    let table = '<table style="width:100%">'
     table += '<tr>'
     table += '<th>Hash</th>'
     table += '<th>Value (BNB)</th>'
+    table += '<th>To</th>'
+    table += '<th></th>'
+    table += '<th>From</th>'
     table += '</tr>'
     for (let i = 0; i < data.length; i++) {
         table += '<tr>'
         table += `<td><a href="https://bscscan.com/tx/${data[i].hash}" target="_blank">${data[i].hash}</a></td>`
-        table += `<td>${(data[i].value / Math.pow(10, 18))}</td>`
+        table += `<td class="${(data[i].value / Math.pow(10, 18)) > 100 ? 'warning' : ''}">${(data[i].value / Math.pow(10, 18))}</td>`
+        table += `<td>${data[i].transactionsNamesToken[0] ? data[i].transactionsNamesToken[0] : ''}</td>`
+        table += `<td><b>-></b></td>`
+        table += `<td>${data[i].transactionsNamesToken[1] ? data[i].transactionsNamesToken[1] : ''}</td>`
         table += '</tr>'
     }
     table += '</table>'
@@ -28,7 +34,16 @@ function createTableSignals(data) {
         * {
             font-family: monospace;
         }
-    </style>`
+
+        tr:hover {
+            background: gray;
+        }
+
+        .warning {
+            background: green;
+        }
+    </style>
+    </body></html>`
 
     return upBlock + table + downBlock
 }

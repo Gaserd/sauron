@@ -3,6 +3,18 @@ const Web3 = require('web3')
 const web3 = new Web3('https://bsc-dataseed1.binance.org:443')
 const fs = require('fs')
 
+const address = JSON.parse(fs.readFileSync('./bsctokens.json'))
+
+
+function getNameTokenByAddress(as) {
+    let result = null
+    for (let i = 0; i < address.length; i++) {
+        if (address[i].address == +as) {
+            result = address[i]
+        }
+    }
+    return result
+}
 
 async function getBlockNumber() {
     return new Promise(function (resolve, reject) {
@@ -46,7 +58,28 @@ async function getTransaction(hash) {
             //value = 1 BNB
             if (value != 0 && value > 25 && data.to === '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F') {
                 console.log(data.hash, value)
-                saveSignals(data)
+                data.transactionsNamesToken = []
+                web3.eth.getTransactionReceipt(data.hash)
+                    .then(res => {
+                        if (res.status) {
+                            let names = []
+                            for (let i = 0; i < res.logs.length; i++) {
+                                let addrr = res.logs[i].address
+                                let name = getNameTokenByAddress(addrr)
+
+                                if (name != null) {
+                                    if (names.indexOf(name.text) == -1) {
+                                        names.push(name.text)
+                                    }
+                                }
+                            }
+                            data.transactionsNamesToken = names
+                            saveSignals(data)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
             }
         })
         .catch(e => {
@@ -55,18 +88,19 @@ async function getTransaction(hash) {
 }
 
 async function saveSignals(data) {
-    const signals = JSON.parse(fs.readFileSync('./signals.json'));
-    if (saveSignals.length < 50) {
+    let signals = JSON.parse(fs.readFileSync('./signals.json'));
+    if (signals.length < 50) {
         signals.push(data)
         fs.writeFileSync('./signals.json', JSON.stringify(signals))
     } else {
-        signals.shift()
+        signals = signals.slice(signals.length - 50, signals.length)
         signals.push(data)
         fs.writeFileSync('./signals.json', JSON.stringify(signals))
     }
 }
 
 let arrayBlockNumber = []
+
 
 setInterval(() => {
     getBlockNumber()
@@ -83,4 +117,5 @@ setInterval(() => {
             }
         })
 }, 3000);
+
 //среднее время завершения блока 4 секунды
