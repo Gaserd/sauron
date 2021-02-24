@@ -89,7 +89,7 @@ async function getTransaction(hash) {
 
 async function saveSignals(data) {
     let signals = JSON.parse(fs.readFileSync('./signals.json'));
-    if (signals.length < 50) {
+    if (signals.length < 150) {
         signals.push(data)
         fs.writeFileSync('./signals.json', JSON.stringify(signals))
     } else {

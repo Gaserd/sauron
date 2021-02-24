@@ -6,7 +6,13 @@ function createTableSignals(data) {
 
     data = data.reverse()
 
-    let upBlock = '<html><body><h1>Monitoring PancakeSwap transactions</h1>'
+    let upBlock = `<html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Monitoring PancakeSwap transactions</title>
+        </head>
+        <body>
+            <h1>Monitoring PancakeSwap transactions</h1>`
     upBlock += '<p>we monitoring big transactions on PancakeSwap (more 25 BNB) and view last 50 this transactions</p>'
     upBlock += '<p>pls refresh page if you want get new transactions</p>'
 
@@ -36,11 +42,11 @@ function createTableSignals(data) {
         }
 
         tr:hover {
-            background: gray;
+            background: #dadae2;
         }
 
         .warning {
-            background: green;
+            background: palegreen;
         }
     </style>
     </body></html>`
