@@ -17,6 +17,16 @@ function getPrices() {
 }
 
 
+function getIntervalPrices(prices, interval) {
+    //interval - minutes
+    let arr = []
+    for (let i = 0; i < prices.length; i++) {
+        if (i % interval == 0) arr.push(prices[i])
+    }
+    return arr
+}
+
+
 function save(prices) {
     let oldPrices = JSON.parse(fs.readFileSync('./prices.json'))
 
@@ -45,7 +55,7 @@ function save(prices) {
                         oldPrices[i].prevPrices = 'UP'
                     }
 
-                    if (oldPrices[i].prices.length >= 60) {
+                    if (oldPrices[i].prices.length >= 600) {
                         oldPrices[i].prices.shift()
                         oldPrices[i].prices.push(prices[j])
                     } else {
@@ -57,7 +67,23 @@ function save(prices) {
                         period : 7
                     };
 
+                    const inputRSI5 = {
+                        values: getIntervalPrices(oldPrices[i].prices, 5),
+                        period: 7
+                    }
+
+                    const inputRSI15 = {
+                        values: getIntervalPrices(oldPrices[i].prices, 15),
+                        period: 7
+                    }
+
+
+
+
                     oldPrices[i].rsi = RSI.calculate(inputRSI)
+                    oldPrices[i].rsi5 = RSI.calculate(inputRSI5)
+                    oldPrices[i].rsi15 = RSI.calculate(inputRSI15)
+                    
 
                 }
             }
