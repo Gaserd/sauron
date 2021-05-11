@@ -1,7 +1,7 @@
 const {
     apiKeyBinance, apiSecretBinance
 } = require('./constant.js')
-const { Telegraf } = require('telegraf')
+const TelegramBot = require("node-telegram-bot-api");
 const BOT_TOKEN = '183576037:AAHQ-C1Cedke_qQw02do3g9OdnmodniZPHc'
 
 const Binance = require('binance-api-node').default
@@ -20,12 +20,7 @@ const client = Binance({
 
 const array = []
 
-const bot = new Telegraf(BOT_TOKEN)
-bot.launch()
-
-
-
-
+const bot = new TelegramBot(BOT_TOKEN, { polling: { autoStart: false } });
 
 cron.schedule('*/5 * * * *', () => {  
     console.clear()
@@ -83,7 +78,8 @@ cron.schedule('*/5 * * * *', () => {
                 })
             }
 
-            bot.telegram.sendMessage('@ethbbrsistoch', `
+            
+            bot.sendMessage('@ethbbrsistoch', `
             ${new Date()}
             ETH – ${close[close.length - 1]}
             RSI - ${RSI14[RSI14.length - 1]}
@@ -91,6 +87,7 @@ cron.schedule('*/5 * * * *', () => {
             BB – ${BB202[BB202.length - 1].lower}
             ${FLAGBB && FLAGSTOCH && FLAGRSI ? '@gaserd' : 'NEUTRAL'}
             `)
+            
         })
         .catch(e => console.log(e))
 })
