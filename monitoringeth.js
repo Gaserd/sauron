@@ -51,9 +51,9 @@ cron.schedule('*/5 * * * *', () => {
                 values: close
             })
 
-            const FLAGRSI = RSI14[RSI14.length - 1] < 35
-            const FLAGSTOCH = STOCHASTIC533[STOCHASTIC533.length - 1].k < 25
-            const FLAGBB = BB202[BB202.length - 1].lower > close[close.length - 1]
+            const FLAGRSI = RSI14[RSI14.length - 1] <= 40
+            const FLAGSTOCH = STOCHASTIC533[STOCHASTIC533.length - 1].k <= 30
+            const FLAGBB = BB202[BB202.length - 1].lower >= close[close.length - 1]
 
             if (array.length >= 5) {
                 array.shift()
