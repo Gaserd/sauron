@@ -22,7 +22,7 @@ const array = []
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: { autoStart: false } });
 
-cron.schedule('*/5 * * * *', () => {  
+cron.schedule('*/5 * * * *', () => {
     console.clear()
     console.log(new Date())
 
@@ -78,8 +78,8 @@ cron.schedule('*/5 * * * *', () => {
                 })
             }
 
-            
-            bot.sendMessage('@ethbbrsistoch', `
+            if (FLAGBB && FLAGSTOCH && FLAGRSI) {
+                bot.sendMessage('@ethbbrsistoch', `
             ${new Date()}
             ETH – ${close[close.length - 1]}
             RSI - ${RSI14[RSI14.length - 1]}
@@ -87,7 +87,20 @@ cron.schedule('*/5 * * * *', () => {
             BB – ${BB202[BB202.length - 1].lower}
             ${FLAGBB && FLAGSTOCH && FLAGRSI ? '@gaserd' : 'NEUTRAL'}
             `)
-            
+            }
         })
         .catch(e => console.log(e))
 })
+
+
+/*
+Будущий алгоритм
+
+если две свечи пересекли ББ, то можно на открытие третьей открывать позицию – тогда мы будем четко уверены в том, что мы выбрали правильный вход
+
+если докупаешься, то надо докупаться больше чем падение на 1% возможно прям докупаться пиздец на глубинах – потому что докупка, это по сути проеб
+твоего входа – надо подумать где и как лучше докупаться? может на еще одних точках входа, если ты еще не вышел из позы
+
+если долгое время (какое?) нету профита, то надо закрывать сделку в безубыток, просто покрыть комсу и ждать следующих более выгодных входов
+
+*/
